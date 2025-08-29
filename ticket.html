@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zgłoszenie %%TICKET_ID%% - Velorie.pl</title>
+    <meta name="description" content="Transkrypcja zamkniętego zgłoszenia supportu na serwerze Velorie.pl.">
+    <meta name="theme-color" content="#0a1030">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --accent: #ff0354; }
+        body { background-color: #00010f; background-image: radial-gradient(1200px 600px at 80% -10%, #0a1030 0%, #050919 35%, #00010f 65%, #000000 100%); }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); }
+        @keyframes particle-animation { 0%, 100% { transform: translateY(0%) translateX(0%) rotate(0deg); } 50% { transform: translateY(-10%) translateX(5%) rotate(20deg); } }
+        .particle { animation-name: particle-animation; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+    </style>
+</head>
+<body class="min-h-screen text-white selection:bg-[#ff0354]/40 selection:text-white">
+    <div id="particles-container" aria-hidden="true" class="pointer-events-none fixed inset-0 overflow-hidden z-0"></div>
+
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
+        <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
+            <a href="https://velorie.pl/" class="flex items-center gap-3 flex-shrink-0">
+                <img src="https://i.imgur.com/ikYb7tH.png" alt="logo" class="h-10 w-10 rounded-xl ring-1 ring-white/10">
+                <div class="leading-tight hidden sm:block">
+                    <div class="text-lg font-semibold tracking-tight">Velorie.pl</div>
+                    <div class="text-xs text-white/60">System Zgłoszeń</div>
+                </div>
+            </a>
+            <a href="https://discord.gg/TWOJ_LINK" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-white/5 px-4 py-2 text-sm font-medium hover:bg-white/10 transition">
+                <i data-lucide="message-square" class="h-4 w-4"></i>
+                <span>Dołącz na Discord</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="relative z-10 mx-auto max-w-4xl p-4 md:p-8">
+        <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+            
+            <div>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <h1 class="text-3xl font-bold">
+                        Zgłoszenie <span class="font-mono text-white/50">#%%TICKET_ID%%</span>
+                    </h1>
+                    <span class="mt-2 sm:mt-0 text-sm font-medium bg-green-500/20 text-green-300 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i data-lucide="check-circle" class="h-4 w-4"></i>Zgłoszenie Zamknięte
+                    </span>
+                </div>
+                <p class="text-lg text-white/60 mt-2">Temat: %%TICKET_TOPIC%%</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 border-t border-white/10 pt-6">
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                    <i data-lucide="user" class="h-8 w-8 text-[var(--accent)] flex-shrink-0"></i>
+                    <div>
+                        <div class="text-sm text-white/60">Otwarty przez</div>
+                        <div class="font-semibold">%%TICKET_CREATOR%%</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                    <i data-lucide="user-cog" class="h-8 w-8 text-[var(--accent)] flex-shrink-0"></i>
+                    <div>
+                        <div class="text-sm text-white/60">Zamknięty przez</div>
+                        <div class="font-semibold">%%TICKET_CLOSER%%</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                    <i data-lucide="calendar-plus" class="h-8 w-8 text-white/70 flex-shrink-0"></i>
+                    <div>
+                        <div class="text-sm text-white/60">Data otwarcia</div>
+                        <div class="font-semibold">%%TICKET_CREATED_AT%%</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                    <i data-lucide="calendar-check" class="h-8 w-8 text-white/70 flex-shrink-0"></i>
+                    <div>
+                        <div class="text-sm text-white/60">Data zamknięcia</div>
+                        <div class="font-semibold">%%TICKET_CLOSED_AT%%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 border-t border-white/10 pt-8">
+                <h2 class="text-xl font-semibold mb-6">Transkrypcja rozmowy</h2>
+                <div class="space-y-6">
+                    </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const createParticles = () => {
+                const container = document.getElementById('particles-container');
+                if (!container) return;
+                const particleCount = 28;
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('span');
+                    const size = 24 + (i % 5) * 12;
+                    particle.className = 'absolute rounded-full opacity-20 blur-2xl particle';
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = i % 3 ? 'var(--accent)' : "#4f46e5";
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.animationDuration = `${10 + (i % 5)}s`;
+                    particle.style.animationDelay = `${i * 0.2}s`;
+                    container.appendChild(particle);
+                }
+            };
+            createParticles();
+        });
+    </script>
+</body>
+</html>
