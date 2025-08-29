@@ -2,7 +2,7 @@
 const sqlite3 = require('sqlite3').verbose();
 
 // To stworzy plik o nazwie 'database.db' w Twoim folderze
-const db = new sqlite3.Database('./database.db');
+const db = new sqlite3.Database('/data/database.db');
 
 const TICKET_TABLE_SCHEMA = `
 CREATE TABLE IF NOT EXISTS tickets (
@@ -47,4 +47,5 @@ db.serialize(() => {
 console.log("Połączono z bazą danych SQLite i zweryfikowano tabele.");
 
 // Eksportujemy obiekt bazy danych, aby 'server.js' mógł go używać
+
 module.exports = db;
