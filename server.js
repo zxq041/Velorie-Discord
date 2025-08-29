@@ -1,31 +1,21 @@
-// =================================================================
-// === Serwer Transkrypcji dla Velorie.pl                        ===
-// === Wersja finalna, przystosowana do hostingu na Railway      ===
-// =================================================================
-
-// --- Importowanie potrzebnych modułów ---
 const express = require('express');
 const fs = require('fs');
-const path = require('path'); // Poprawnie zaimportowany moduł 'path'
+const path = require('path');
 const cors = require('cors');
-const db = require('./database.js'); // Import bazy danych
+const db = require('./database.js');
 
-// --- Konfiguracja Aplikacji dla Railway ---
 const app = express();
-const PORT = process.env.PORT || 3000; // Odczyt portu ze zmiennych środowiskowych Railway
-const API_SECRET_KEY = process.env.API_SECRET_KEY; // Odczyt klucza API ze zmiennych środowiskowych Railway
+const PORT = process.env.PORT || 3000;
+const API_SECRET_KEY = process.env.API_SECRET_KEY;
 
-// Sprawdzenie, czy klucz API został ustawiony w panelu Railway
 if (!API_SECRET_KEY) {
     console.error("Krytyczny błąd: Brak zdefiniowanej zmiennej API_SECRET_KEY!");
-    process.exit(1); // Zatrzymuje serwer, jeśli klucz nie jest ustawiony
+    process.exit(1);
 }
 
-// --- Konfiguracja Middleware ---
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Middleware do weryfikacji, czy zapytanie pochodzi od naszego bota
 const checkApiKey = (req, res, next) => {
     const apiKey = req.headers['authorization'];
     if (apiKey && apiKey === API_SECRET_KEY) {
@@ -34,6 +24,15 @@ const checkApiKey = (req, res, next) => {
         res.status(403).json({ error: 'Brak autoryzacji.' });
     }
 };
+
+// =================================================================
+// === DODANA OBSŁUGA FAVICON.ICO                                ===
+// =================================================================
+// Ta linia przechwytuje zapytania o ikonę i odsyła pustą odpowiedź 204 (No Content),
+// co jest sygnałem dla przeglądarki, że wszystko jest OK, ale nie ma ikonki.
+// Dzięki temu zapytanie nie trafia do logiki transkrypcji i nie generuje błędu.
+app.get('/favicon.ico', (req, res) => res.status(204).send());
+
 
 // =================================================================
 // === API ENDPOINT (BOT WYSYŁA TUTAJ DANE)                      ===
@@ -109,7 +108,6 @@ app.get('/:transcriptId', (req, res) => {
                     return res.status(500).send('<h1>Błąd serwera: nie można wczytać szablonu HTML.</h1>');
                 }
 
-                // --- Generowanie ostylowanej listy wiadomości ---
                 let messagesHtml = '';
                 messages.forEach(message => {
                     const badge = message.is_admin ? `<span class="text-xs font-medium bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full">Administracja</span>` : `<span class="text-xs font-medium bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">Użytkownik</span>`;
@@ -131,15 +129,7 @@ app.get('/:transcriptId', (req, res) => {
                         </div>`;
                 });
 
-                // --- Podmiana wszystkich znaczników w szablonie ---
-                let finalHtml = htmlTemplate
-                    .replace(/%%TICKET_ID%%/g, ticket.transcript_id.substring(0, 6))
-                    .replace(/%%TICKET_TOPIC%%/g, ticket.topic)
-                    .replace(/%%TICKET_CREATOR%%/g, ticket.creator_name)
-                    .replace(/%%TICKET_CLOSER%%/g, ticket.closed_by_name)
-                    .replace(/%%TICKET_CREATED_AT%%/g, new Date(ticket.created_at).toLocaleString('pl-PL'))
-                    .replace(/%%TICKET_CLOSED_AT%%/g, new Date(ticket.closed_at).toLocaleString('pl-PL'))
-                    .replace('', messagesHtml);
+                let finalHtml = htmlTemplate.replace(/%%TICKET_ID%%/g, ticket.transcript_id.substring(0, 6)).replace(/%%TICKET_TOPIC%%/g, ticket.topic).replace(/%%TICKET_CREATOR%%/g, ticket.creator_name).replace(/%%TICKET_CLOSER%%/g, ticket.closed_by_name).replace(/%%TICKET_CREATED_AT%%/g, new Date(ticket.created_at).toLocaleString('pl-PL')).replace(/%%TICKET_CLOSED_AT%%/g, new Date(ticket.closed_at).toLocaleString('pl-PL')).replace('', messagesHtml);
                 
                 console.log(`Pomyślnie wysłano transkrypcję o ID: ${transcriptId}`);
                 res.send(finalHtml);
