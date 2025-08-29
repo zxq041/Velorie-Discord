@@ -1,31 +1,38 @@
 // Plik: server.js
 // Importowanie potrzebnych modułów
 const express = require('express');
-const fs = require('fs'); // Moduł do operacji na plikach
-const path = require('path');
+const fs = require('fs');
+const path = 'path';
 const cors = require('cors');
-const db = require('./database.js'); // Importujemy naszą bazę danych
+const db = require('./database.js'); // Importujemy bazę danych
 
-// --- Konfiguracja Aplikacji ---
+// --- Konfiguracja Aplikacji dla Railway ---
 const app = express();
-const PORT = 3000; // Możesz zmienić ten port, jeśli jest zajęty
 
-// Pamiętaj, aby ten klucz był identyczny jak ten w bocie!
-const API_SECRET_KEY = 'TwojSuperTajnyKluczAPI-ZmienToKoniecznie!';
+// 1. Odczyt portu ze zmiennych środowiskowych Railway.
+//    Lokalnie, jeśli PORT nie jest ustawiony, użyje 3000 jako domyślnego.
+const PORT = process.env.PORT || 3000;
+
+// 2. Odczyt sekretnego klucza API ze zmiennych środowiskowych Railway.
+const API_SECRET_KEY = process.env.API_SECRET_KEY;
+
+// Sprawdzenie, czy klucz API został ustawiony w panelu Railway.
+if (!API_SECRET_KEY) {
+    console.error("Krytyczny błąd: Brak zdefiniowanej zmiennej API_SECRET_KEY!");
+    process.exit(1); // Zatrzymuje serwer, jeśli klucz nie jest ustawiony
+}
 
 // --- Konfiguracja Middleware ---
-// Umożliwia komunikację z innych domen i parsowanie danych JSON
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // Zwiększamy limit na wypadek dużych transkrypcji
+app.use(express.json({ limit: '10mb' }));
 
-// --- Middleware do autoryzacji bota ---
-// Sprawdza, czy zapytanie od bota zawiera poprawny klucz
+// Middleware do autoryzacji bota
 const checkApiKey = (req, res, next) => {
     const apiKey = req.headers['authorization'];
     if (apiKey && apiKey === API_SECRET_KEY) {
-        next(); // Klucz poprawny, przejdź dalej
+        next();
     } else {
-        res.status(403).json({ error: 'Brak autoryzacji.' }); // Klucz błędny, odrzuć zapytanie
+        res.status(403).json({ error: 'Brak autoryzacji.' });
     }
 };
 
@@ -43,16 +50,13 @@ app.post('/api/ticket', checkApiKey, (req, res) => {
     const messageQuery = `INSERT INTO messages (ticket_id, author_name, author_avatar, is_admin, content, timestamp) VALUES (?, ?, ?, ?, ?, ?)`;
     
     db.serialize(() => {
-        // Krok 1: Zapisz główny ticket do bazy
         db.run(ticketQuery, [ticket.channel_id, ticket.creator_name, ticket.creator_id, ticket.topic, ticket.transcript_id, ticket.created_at, ticket.closed_at, ticket.closed_by_name], function(err) {
             if (err) {
                 console.error("Błąd zapisu ticketa:", err.message);
                 return res.status(500).json({ error: 'Błąd serwera podczas zapisu ticketa.' });
             }
             
-            const ticketId = this.lastID; // Pobieramy ID właśnie wstawionego ticketa
-            
-            // Krok 2: Zapisz wszystkie wiadomości powiązane z tym ticketem
+            const ticketId = this.lastID;
             const stmt = db.prepare(messageQuery);
             for (const msg of messages) {
                 stmt.run(ticketId, msg.author_name, msg.author_avatar, msg.is_admin, msg.content, msg.timestamp);
@@ -73,7 +77,7 @@ app.post('/api/ticket', checkApiKey, (req, res) => {
 // === ENDPOINT STRONY GŁÓWNEJ                                    ===
 // =================================================================
 app.get('/', (req, res) => {
-    res.send('<h1>System transkrypcji Velorie.pl działa.</h1><p>Wklej w pasku adresu pełny link do transkrypcji, aby ją zobaczyć.</p>');
+    res.send('<h1>System transkrypcji Velorie.pl działa.</h1>');
 });
 
 // =================================================================
@@ -85,25 +89,21 @@ app.get('/:transcriptId', (req, res) => {
     const ticketQuery = `SELECT * FROM tickets WHERE transcript_id = ?`;
     const messagesQuery = `SELECT * FROM messages WHERE ticket_id = ? ORDER BY timestamp ASC`;
 
-    // Krok 1: Znajdź ticket w bazie po jego unikalnym ID transkrypcji
     db.get(ticketQuery, [transcriptId], (err, ticket) => {
         if (err || !ticket) {
             return res.status(404).send('<h1>404 - Nie znaleziono transkrypcji</h1><p>Upewnij się, że link jest poprawny.</p>');
         }
 
-        // Krok 2: Znaleziono ticket, teraz pobierz wszystkie jego wiadomości
         db.all(messagesQuery, [ticket.id], (err, messages) => {
             if (err) {
                 return res.status(500).send('<h1>Błąd serwera podczas ładowania wiadomości</h1>');
             }
 
-            // Krok 3: Wczytaj szablon ticket.html
             fs.readFile(path.join(__dirname, 'ticket.html'), 'utf8', (err, htmlTemplate) => {
                 if (err) {
                     return res.status(500).send('<h1>Błąd serwera: nie można wczytać szablonu HTML.</h1>');
                 }
 
-                // Krok 4: Wygeneruj HTML dla każdej wiadomości
                 let messagesHtml = '';
                 messages.forEach(message => {
                     const badge = message.is_admin 
@@ -130,7 +130,6 @@ app.get('/:transcriptId', (req, res) => {
                         </div>`;
                 });
 
-                // Krok 5: Podmień wszystkie znaczniki w szablonie na prawdziwe dane
                 let finalHtml = htmlTemplate
                     .replace(/%%TICKET_ID%%/g, ticket.transcript_id.substring(0, 6))
                     .replace(/%%TICKET_TOPIC%%/g, ticket.topic)
@@ -140,7 +139,6 @@ app.get('/:transcriptId', (req, res) => {
                     .replace(/%%TICKET_CLOSED_AT%%/g, new Date(ticket.closed_at).toLocaleString('pl-PL'))
                     .replace('', messagesHtml);
                 
-                // Krok 6: Wyślij gotową stronę HTML do przeglądarki użytkownika
                 res.send(finalHtml);
             });
         });
@@ -152,5 +150,4 @@ app.get('/:transcriptId', (req, res) => {
 // =================================================================
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
-    console.log(`Otwórz http://localhost:${PORT} w przeglądarce.`);
 });
