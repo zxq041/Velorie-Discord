@@ -2,7 +2,8 @@
 // Importowanie potrzebnych modułów
 const express = require('express');
 const fs = require('fs');
-const path = 'path';
+// NOWY, POPRAWNY KOD
+const path = require('path');
 const cors = require('cors');
 const db = require('./database.js'); // Importujemy bazę danych
 
@@ -151,3 +152,4 @@ app.get('/:transcriptId', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
 });
+
