@@ -25,18 +25,8 @@ const checkApiKey = (req, res, next) => {
     }
 };
 
-// =================================================================
-// === DODANA OBSŁUGA FAVICON.ICO                                ===
-// =================================================================
-// Ta linia przechwytuje zapytania o ikonę i odsyła pustą odpowiedź 204 (No Content),
-// co jest sygnałem dla przeglądarki, że wszystko jest OK, ale nie ma ikonki.
-// Dzięki temu zapytanie nie trafia do logiki transkrypcji i nie generuje błędu.
 app.get('/favicon.ico', (req, res) => res.status(204).send());
 
-
-// =================================================================
-// === API ENDPOINT (BOT WYSYŁA TUTAJ DANE)                      ===
-// =================================================================
 app.post('/api/ticket', checkApiKey, (req, res) => {
     console.log("Otrzymano nowe zgłoszenie do zapisu...");
     const { ticket, messages } = req.body;
@@ -73,17 +63,11 @@ app.post('/api/ticket', checkApiKey, (req, res) => {
     });
 });
 
-// =================================================================
-// === ENDPOINT STRONY GŁÓWNEJ (KONTROLA ZDROWIA)                  ===
-// =================================================================
 app.get('/', (req, res) => {
     console.log("Otrzymano zapytanie GET do strony głównej (health check).");
     res.status(200).send('<h1>System transkrypcji Velorie.pl działa poprawnie.</h1>');
 });
 
-// =================================================================
-// === ENDPOINT WYŚWIETLANIA TRANSKRYPCJI                        ===
-// =================================================================
 app.get('/:transcriptId', (req, res) => {
     console.log(`Próba odczytu transkrypcji o ID: ${req.params.transcriptId}`);
     const { transcriptId } = req.params;
@@ -128,8 +112,19 @@ app.get('/:transcriptId', (req, res) => {
                             </div>
                         </div>`;
                 });
-
-                let finalHtml = htmlTemplate.replace(/%%TICKET_ID%%/g, ticket.transcript_id.substring(0, 6)).replace(/%%TICKET_TOPIC%%/g, ticket.topic).replace(/%%TICKET_CREATOR%%/g, ticket.creator_name).replace(/%%TICKET_CLOSER%%/g, ticket.closed_by_name).replace(/%%TICKET_CREATED_AT%%/g, new Date(ticket.created_at).toLocaleString('pl-PL')).replace(/%%TICKET_CLOSED_AT%%/g, new Date(ticket.closed_at).toLocaleString('pl-PL')).replace('', messagesHtml);
+                
+                // =================================================================
+                // === OTO KLUCZOWA POPRAWKA                                     ===
+                // =================================================================
+                let finalHtml = htmlTemplate
+                    .replace(/%%TICKET_ID%%/g, ticket.transcript_id.substring(0, 6))
+                    .replace(/%%TICKET_TOPIC%%/g, ticket.topic)
+                    .replace(/%%TICKET_CREATOR%%/g, ticket.creator_name)
+                    .replace(/%%TICKET_CLOSER%%/g, ticket.closed_by_name)
+                    .replace(/%%TICKET_CREATED_AT%%/g, new Date(ticket.created_at).toLocaleString('pl-PL'))
+                    .replace(/%%TICKET_CLOSED_AT%%/g, new Date(ticket.closed_at).toLocaleString('pl-PL'))
+                    // Ta linia szuka teraz nowego, poprawnego znacznika
+                    .replace('<div id="messages-placeholder">%%MESSAGES_LIST%%</div>', messagesHtml);
                 
                 console.log(`Pomyślnie wysłano transkrypcję o ID: ${transcriptId}`);
                 res.send(finalHtml);
@@ -138,9 +133,6 @@ app.get('/:transcriptId', (req, res) => {
     });
 });
 
-// =================================================================
-// === URUCHOMIENIE SERWERA                                      ===
-// =================================================================
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
 });
