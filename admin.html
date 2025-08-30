@@ -73,19 +73,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            const createParticles = () => { /* ... kod cząsteczek ... */ };
+            const createParticles = () => {  };
             createParticles();
 
-            // === GŁÓWNA LOGIKA PANELU ADMINA ===
+          
             const ticketTableBody = document.getElementById('ticketTableBody');
             const searchInput = document.getElementById('searchInput');
 
             async function fetchAndRenderTickets(searchTerm = '') {
                 try {
-                    // Pobieramy dane z naszego API
+                  
                     const response = await fetch(`/api/tickets?search=${encodeURIComponent(searchTerm)}`);
                     
-                    // Jeśli sesja wygasła, serwer zwróci błąd, a my przekierujemy na stronę logowania
+                   
                     if (!response.ok) {
                         window.location.href = '/login';
                         return;
@@ -93,7 +93,7 @@
 
                     const tickets = await response.json();
                     
-                    ticketTableBody.innerHTML = ''; // Czyścimy tabelę przed wstawieniem nowych danych
+                    ticketTableBody.innerHTML = ''; 
 
                     if (tickets.length === 0) {
                         ticketTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-white/60">Nie znaleziono żadnych transkrypcji pasujących do kryteriów.</td></tr>`;
@@ -117,27 +117,28 @@
                         `;
                         ticketTableBody.innerHTML += row;
                     });
-                    lucide.createIcons(); // Musimy ponownie zainicjować ikony po dodaniu nowych
+                    lucide.createIcons(); 
                 } catch (error) {
                     console.error('Błąd pobierania ticketów:', error);
                     ticketTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-400">Wystąpił błąd podczas ładowania danych.</td></tr>`;
                 }
             }
 
-            // Obsługa wyszukiwarki
+         
             let searchTimeout;
             searchInput.addEventListener('input', () => {
                 clearTimeout(searchTimeout);
-                // Czekamy 300ms po ostatnim wciśnięciu klawisza, aby nie wysyłać zapytań po każdej literze
+              
                 searchTimeout = setTimeout(() => {
                     fetchAndRenderTickets(searchInput.value);
                 }, 300);
             });
 
-            // Pobranie wszystkich ticketów przy pierwszym załadowaniu strony
+           
             fetchAndRenderTickets();
         });
     </script>
 </body>
 </html>
+
 
