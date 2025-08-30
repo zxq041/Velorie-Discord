@@ -23,14 +23,18 @@
 
     <header class="sticky top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
         <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
-            <a href="#" class="flex items-center gap-3 flex-shrink-0">
+            <a href="/admin" class="flex items-center gap-3 flex-shrink-0">
                 <img src="https://i.imgur.com/ikYb7tH.png" alt="logo" class="h-10 w-10 rounded-xl ring-1 ring-white/10">
                 <div class="leading-tight hidden sm:block">
                     <div class="text-lg font-semibold tracking-tight">Velorie.pl</div>
                     <div class="text-xs text-white/60">Panel Administratora</div>
                 </div>
             </a>
-            </div>
+            <a href="/logout" class="inline-flex items-center gap-2 rounded-lg bg-white/5 px-4 py-2 text-sm font-medium hover:bg-white/10 transition">
+                <i data-lucide="log-out" class="h-4 w-4"></i>
+                <span>Wyloguj</span>
+            </a>
+        </div>
     </header>
 
     <main class="relative z-10 mx-auto max-w-7xl p-4 md:p-8">
@@ -41,7 +45,7 @@
                 <p class="text-lg text-white/60 mt-2">Przeglądaj i wyszukuj transkrypcje zamkniętych zgłoszeń.</p>
                 <div class="relative mt-6">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 h-5 w-5 pointer-events-none"></i>
-                    <input type="text" placeholder="Wyszukaj po nicku Discord (np. zxq0#1234)..." class="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all">
+                    <input type="text" id="searchInput" placeholder="Wyszukaj po nicku Discord (np. zxq0#1234)..." class="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all">
                 </div>
             </div>
 
@@ -56,53 +60,10 @@
                             <th class="py-3 px-4 text-sm font-semibold text-white/60 text-right">Akcje</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/10">
-                        <tr class="hover:bg-white/5 transition-colors">
-                            <td class="py-4 px-4 font-mono text-sm">#1e2f6a</td>
-                            <td class="py-4 px-4">derek_332</td>
-                            <td class="py-4 px-4">Problem z McList</td>
-                            <td class="py-4 px-4 text-white/80">29.08.2025, 22:58:33</td>
-                            <td class="py-4 px-4 text-right">
-                                <a href="#" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
-                                    <i data-lucide="eye" class="h-4 w-4"></i>
-                                    <span>Zobacz</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-white/5 transition-colors">
-                            <td class="py-4 px-4 font-mono text-sm">#8f48728</td>
-                            <td class="py-4 px-4">inny_uzytkownik#5555</td>
-                            <td class="py-4 px-4">Współpraca</td>
-                            <td class="py-4 px-4 text-white/80">28.08.2025, 15:12:01</td>
-                            <td class="py-4 px-4 text-right">
-                                <a href="#" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
-                                    <i data-lucide="eye" class="h-4 w-4"></i>
-                                    <span>Zobacz</span>
-                                </a>
-                            </td>
-                        </tr>
-                         <tr class="hover:bg-white/5 transition-colors">
-                            <td class="py-4 px-4 font-mono text-sm">#222bfe</td>
-                            <td class="py-4 px-4">zxq0</td>
-                            <td class="py-4 px-4">Problem z Sklepem</td>
-                            <td class="py-4 px-4 text-white/80">27.08.2025, 23:03:03</td>
-                            <td class="py-4 px-4 text-right">
-                                <a href="#" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
-                                    <i data-lucide="eye" class="h-4 w-4"></i>
-                                    <span>Zobacz</span>
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
+                    <tbody id="ticketTableBody" class="divide-y divide-white/10">
+                        <tr><td colspan="5" class="text-center py-8 text-white/60">Ładowanie transkrypcji...</td></tr>
+                    </tbody>
                 </table>
-            </div>
-
-            <div class="flex items-center justify-center gap-2 mt-8">
-                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition" disabled><i data-lucide="chevron-left" class="h-5 w-5 text-white/50"></i></button>
-                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-[var(--accent)] text-white font-semibold transition">1</button>
-                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition">2</button>
-                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition">3</button>
-                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition"><i data-lucide="chevron-right" class="h-5 w-5"></i></button>
             </div>
 
         </div>
@@ -110,29 +71,70 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicjalizacja ikon Lucide
             lucide.createIcons();
-
-            // Tworzenie animowanych cząsteczek w tle
-            const createParticles = () => {
-                const container = document.getElementById('particles-container');
-                if (!container) return;
-                const particleCount = 28;
-                for (let i = 0; i < particleCount; i++) {
-                    const particle = document.createElement('span');
-                    const size = 24 + (i % 5) * 12;
-                    particle.className = 'absolute rounded-full opacity-20 blur-2xl particle';
-                    particle.style.width = `${size}px`;
-                    particle.style.height = `${size}px`;
-                    particle.style.background = i % 3 ? 'var(--accent)' : "#4f46e5";
-                    particle.style.left = `${Math.random() * 100}%`;
-                    particle.style.top = `${Math.random() * 100}%`;
-                    particle.style.animationDuration = `${10 + (i % 5)}s`;
-                    particle.style.animationDelay = `${i * 0.2}s`;
-                    container.appendChild(particle);
-                }
-            };
+            const createParticles = () => { /* ... kod cząsteczek ... */ };
             createParticles();
+
+            // === GŁÓWNA LOGIKA PANELU ADMINA ===
+            const ticketTableBody = document.getElementById('ticketTableBody');
+            const searchInput = document.getElementById('searchInput');
+
+            async function fetchAndRenderTickets(searchTerm = '') {
+                try {
+                    // Pobieramy dane z naszego API
+                    const response = await fetch(`/api/tickets?search=${encodeURIComponent(searchTerm)}`);
+                    
+                    // Jeśli sesja wygasła, serwer zwróci błąd, a my przekierujemy na stronę logowania
+                    if (!response.ok) {
+                        window.location.href = '/login';
+                        return;
+                    }
+
+                    const tickets = await response.json();
+                    
+                    ticketTableBody.innerHTML = ''; // Czyścimy tabelę przed wstawieniem nowych danych
+
+                    if (tickets.length === 0) {
+                        ticketTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-white/60">Nie znaleziono żadnych transkrypcji pasujących do kryteriów.</td></tr>`;
+                        return;
+                    }
+
+                    tickets.forEach(ticket => {
+                        const row = `
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-4 font-mono text-sm">#${ticket.transcript_id.substring(0, 6)}</td>
+                                <td class="py-4 px-4">${ticket.creator_name}</td>
+                                <td class="py-4 px-4">${ticket.topic}</td>
+                                <td class="py-4 px-4 text-white/80">${new Date(ticket.closed_at).toLocaleString('pl-PL')}</td>
+                                <td class="py-4 px-4 text-right">
+                                    <a href="/${ticket.transcript_id}" target="_blank" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
+                                        <i data-lucide="eye" class="h-4 w-4"></i>
+                                        <span>Zobacz</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                        ticketTableBody.innerHTML += row;
+                    });
+                    lucide.createIcons(); // Musimy ponownie zainicjować ikony po dodaniu nowych
+                } catch (error) {
+                    console.error('Błąd pobierania ticketów:', error);
+                    ticketTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-400">Wystąpił błąd podczas ładowania danych.</td></tr>`;
+                }
+            }
+
+            // Obsługa wyszukiwarki
+            let searchTimeout;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                // Czekamy 300ms po ostatnim wciśnięciu klawisza, aby nie wysyłać zapytań po każdej literze
+                searchTimeout = setTimeout(() => {
+                    fetchAndRenderTickets(searchInput.value);
+                }, 300);
+            });
+
+            // Pobranie wszystkich ticketów przy pierwszym załadowaniu strony
+            fetchAndRenderTickets();
         });
     </script>
 </body>
