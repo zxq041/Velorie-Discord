@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie - Panel Administratora - Velorie.pl</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --accent: #ff0354; }
+        body { background-color: #00010f; background-image: radial-gradient(1200px 600px at 80% -10%, #0a1030 0%, #050919 35%, #00010f 65%, #000000 100%); }
+    </style>
+</head>
+<body class="min-h-screen text-white selection:bg-[#ff0354]/40 flex items-center justify-center p-4">
+    <div class="w-full max-w-md p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+        <div class="text-center">
+            <img src="https://i.imgur.com/ikYb7tH.png" alt="logo" class="h-16 w-16 rounded-2xl ring-1 ring-white/10 mx-auto">
+            <h1 class="text-3xl font-bold mt-4">Panel Administratora</h1>
+            <p class="text-white/60 mt-1">Zaloguj się, aby kontynuować</p>
+        </div>
+
+        <form method="POST" action="/login" class="mt-8 space-y-4">
+            <div>
+                <label for="username" class="text-sm font-medium text-white/80">Nazwa użytkownika</label>
+                <input id="username" name="username" type="text" required class="mt-1 w-full bg-black/20 border border-white/10 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all">
+            </div>
+            <div>
+                <label for="password" class="text-sm font-medium text-white/80">Hasło</label>
+                <input id="password" name="password" type="password" required class="mt-1 w-full bg-black/20 border border-white/10 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all">
+            </div>
+            <button type="submit" class="w-full !mt-6 rounded-lg bg-[var(--accent)] px-5 py-3 font-semibold hover:brightness-110 transition shadow-[0_8px_30px_rgba(255,3,84,0.35)]">
+                Zaloguj się
+            </button>
+        </form>
+    </div>
+</body>
+</html>

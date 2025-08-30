@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administratora - Transkrypcje - Velorie.pl</title>
+    <meta name="description" content="Panel do zarządzania transkrypcjami zgłoszeń na serwerze Velorie.pl.">
+    <meta name="theme-color" content="#0a1030">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --accent: #ff0354; }
+        body { background-color: #00010f; background-image: radial-gradient(1200px 600px at 80% -10%, #0a1030 0%, #050919 35%, #00010f 65%, #000000 100%); }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); }
+        @keyframes particle-animation { 0%, 100% { transform: translateY(0%) translateX(0%) rotate(0deg); } 50% { transform: translateY(-10%) translateX(5%) rotate(20deg); } }
+        .particle { animation-name: particle-animation; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+    </style>
+</head>
+<body class="min-h-screen text-white selection:bg-[#ff0354]/40 selection:text-white">
+    <div id="particles-container" aria-hidden="true" class="pointer-events-none fixed inset-0 overflow-hidden z-0"></div>
+
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
+        <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
+            <a href="#" class="flex items-center gap-3 flex-shrink-0">
+                <img src="https://i.imgur.com/ikYb7tH.png" alt="logo" class="h-10 w-10 rounded-xl ring-1 ring-white/10">
+                <div class="leading-tight hidden sm:block">
+                    <div class="text-lg font-semibold tracking-tight">Velorie.pl</div>
+                    <div class="text-xs text-white/60">Panel Administratora</div>
+                </div>
+            </a>
+            </div>
+    </header>
+
+    <main class="relative z-10 mx-auto max-w-7xl p-4 md:p-8">
+        <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+            
+            <div>
+                <h1 class="text-3xl font-bold">Panel Transkrypcji</h1>
+                <p class="text-lg text-white/60 mt-2">Przeglądaj i wyszukuj transkrypcje zamkniętych zgłoszeń.</p>
+                <div class="relative mt-6">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 h-5 w-5 pointer-events-none"></i>
+                    <input type="text" placeholder="Wyszukaj po nicku Discord (np. zxq0#1234)..." class="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all">
+                </div>
+            </div>
+
+            <div class="mt-8 overflow-x-auto">
+                <table class="min-w-full text-left">
+                    <thead class="border-b border-white/10">
+                        <tr>
+                            <th class="py-3 px-4 text-sm font-semibold text-white/60">ID Zgłoszenia</th>
+                            <th class="py-3 px-4 text-sm font-semibold text-white/60">Otwarty przez</th>
+                            <th class="py-3 px-4 text-sm font-semibold text-white/60">Temat</th>
+                            <th class="py-3 px-4 text-sm font-semibold text-white/60">Data Zamknięcia</th>
+                            <th class="py-3 px-4 text-sm font-semibold text-white/60 text-right">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/10">
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="py-4 px-4 font-mono text-sm">#1e2f6a</td>
+                            <td class="py-4 px-4">derek_332</td>
+                            <td class="py-4 px-4">Problem z McList</td>
+                            <td class="py-4 px-4 text-white/80">29.08.2025, 22:58:33</td>
+                            <td class="py-4 px-4 text-right">
+                                <a href="#" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
+                                    <i data-lucide="eye" class="h-4 w-4"></i>
+                                    <span>Zobacz</span>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="py-4 px-4 font-mono text-sm">#8f48728</td>
+                            <td class="py-4 px-4">inny_uzytkownik#5555</td>
+                            <td class="py-4 px-4">Współpraca</td>
+                            <td class="py-4 px-4 text-white/80">28.08.2025, 15:12:01</td>
+                            <td class="py-4 px-4 text-right">
+                                <a href="#" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
+                                    <i data-lucide="eye" class="h-4 w-4"></i>
+                                    <span>Zobacz</span>
+                                </a>
+                            </td>
+                        </tr>
+                         <tr class="hover:bg-white/5 transition-colors">
+                            <td class="py-4 px-4 font-mono text-sm">#222bfe</td>
+                            <td class="py-4 px-4">zxq0</td>
+                            <td class="py-4 px-4">Problem z Sklepem</td>
+                            <td class="py-4 px-4 text-white/80">27.08.2025, 23:03:03</td>
+                            <td class="py-4 px-4 text-right">
+                                <a href="#" class="inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition">
+                                    <i data-lucide="eye" class="h-4 w-4"></i>
+                                    <span>Zobacz</span>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-center gap-2 mt-8">
+                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition" disabled><i data-lucide="chevron-left" class="h-5 w-5 text-white/50"></i></button>
+                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-[var(--accent)] text-white font-semibold transition">1</button>
+                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition">2</button>
+                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition">3</button>
+                <button class="h-9 w-9 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/10 transition"><i data-lucide="chevron-right" class="h-5 w-5"></i></button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicjalizacja ikon Lucide
+            lucide.createIcons();
+
+            // Tworzenie animowanych cząsteczek w tle
+            const createParticles = () => {
+                const container = document.getElementById('particles-container');
+                if (!container) return;
+                const particleCount = 28;
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('span');
+                    const size = 24 + (i % 5) * 12;
+                    particle.className = 'absolute rounded-full opacity-20 blur-2xl particle';
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = i % 3 ? 'var(--accent)' : "#4f46e5";
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.animationDuration = `${10 + (i % 5)}s`;
+                    particle.style.animationDelay = `${i * 0.2}s`;
+                    container.appendChild(particle);
+                }
+            };
+            createParticles();
+        });
+    </script>
+</body>
+</html>
