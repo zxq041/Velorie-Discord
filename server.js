@@ -22,6 +22,9 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+
+app.use(express.static('public'));
+
 app.use(session({
     secret: SESSION_SECRET,
     resave: false,
@@ -45,9 +48,7 @@ const checkApiKey = (req, res, next) => {
     }
 };
 
-// =================================================================
-// === TRASY DLA PANELU ADMINA I LOGOWANIA                     ===
-// =================================================================
+
 
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
@@ -72,9 +73,8 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
-// =================================================================
-// === API DLA PANELU ADMINA (POBIERANIE TICKETÓW)              ===
-// =================================================================
+
+
 app.get('/api/tickets', isAdmin, (req, res) => {
     const searchQuery = req.query.search;
     let query = `SELECT id, channel_id, creator_name, topic, transcript_id, created_at, closed_at, closed_by_name FROM tickets`;
@@ -95,9 +95,7 @@ app.get('/api/tickets', isAdmin, (req, res) => {
     });
 });
 
-// =================================================================
-// === API DLA BOTA (ODBIERANIE TRANSKRYPCJI) - BRAKUJĄCY ELEMENT ===
-// =================================================================
+
 app.post('/api/ticket', checkApiKey, (req, res) => {
     console.log("Otrzymano nowe zgłoszenie do zapisu...");
     const { ticket, messages } = req.body;
@@ -132,9 +130,7 @@ app.post('/api/ticket', checkApiKey, (req, res) => {
     });
 });
 
-// =================================================================
-// === TRASY PUBLICZNE (STRONA GŁÓWNA I TRANSKRYPCJE)            ===
-// =================================================================
+
 app.get('/favicon.ico', (req, res) => res.status(204).send());
 
 app.get('/', (req, res) => {
@@ -143,7 +139,7 @@ app.get('/', (req, res) => {
 
 app.get('/:transcriptId', (req, res) => {
     const { transcriptId } = req.params;
-    // ... reszta kodu do wyświetlania transkrypcji (pozostaje bez zmian)
+
     const ticketQuery = `SELECT * FROM tickets WHERE transcript_id = ?`;
     const messagesQuery = `SELECT * FROM messages WHERE ticket_id = ? ORDER BY timestamp ASC`;
     db.get(ticketQuery, [transcriptId], (err, ticket) => {
@@ -167,9 +163,8 @@ app.get('/:transcriptId', (req, res) => {
     });
 });
 
-// =================================================================
-// === URUCHOMIENIE SERWERA                                      ===
-// =================================================================
+
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
 });
+
